@@ -1,0 +1,36 @@
+
+body {
+background-color: slategray;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+}
+
+.contenedor {
+background-color: azure;
+border-radius: 15px;
+padding: 20px;
+width: 50%;
+min-height: 60%;
+max-height: auto;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.menu-wrapper {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.dropdown-menu {
+z-index: 1000;
+}
+
+.contenedordos {
+/*background-color: aqua;*/
+width: 100%;
+height: auto;
+}
