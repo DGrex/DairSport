@@ -28,44 +28,40 @@ btnPagos.addEventListener("click", (e) => {
 
 document
   .getElementById("formCliente")
-  .addEventListener("submit", function (event) {
+  .addEventListener("submit", async function (event) {
     event.preventDefault();
-
-    /*
-    let inputCedulaR = document.getElementById("inputCedulaR").value.trim();
-    //let inputNombreR = document.getElementById("inputNombreR").value.trim();
-    let inputApellidoR = document.getElementById("inputApellidoR").value.trim();
-    let inputCorreoR = document.getElementById("inputCorreoR").value.trim();
-    let inputTelefonoR = document.getElementById("inputTelefonoR").value.trim();
-    let inputDeudaR = document.getElementById("inputDeudaR").value;
-
-    
-    let errores = [];
-
-    if (!validarCedula(inputCedulaR)) {
-      errores.push("Numero de cedula incorrecto.");
-    }
-
-
-
-    // Mostrar errores o enviar
-    if (errores.length > 0) {
-      alert("Errores:\n- " + errores.join("\n- "));
-    } else {
-      // ✅ Si todo está bien, enviamos el formulario
-      formCliente.submit();
-    }
-*/
 
     let valido = true;
        // Cédula
+
+
+
+
     const cedula = document.getElementById("inputCedulaR");
+
+    // Validación de formato
     if (!validarCedula(cedula.value.trim())) {
       cedula.classList.add("is-invalid");
       valido = false;
     } else {
-      cedula.classList.remove("is-invalid");
-      cedula.classList.add("is-valid");
+      try {
+        // Consultar al servidor si la cédula existe
+        const respuesta = await fetch("validar_cedula.php?cedula=" + cedula.value.trim());
+        const existe = (await respuesta.text()).trim();
+        
+
+        if (existe === "0") {
+          cedula.classList.remove("is-invalid");
+          cedula.classList.add("is-valid");
+        } else {
+          cedula.classList.add("is-invalid");
+          valido = false;
+          alert("❌ La cédula ya está registrada.");
+        }
+      } catch (error) {
+        alert("Error al validar la cédula: " + error);
+        valido = false;
+      }
     }
 
     // Nombre
@@ -128,6 +124,9 @@ document
     
   });
 
+
+
+  //Funcion para validar numero de cedulas ecuatoriana
 function validarCedula(cedula) {
   if (!/^\d{10}$/.test(cedula)) return false;
 
@@ -155,5 +154,63 @@ function validarCedula(cedula) {
   return verificador === digitos[9];
 }
 
+// Apartado de Ventas
+
+document.getElementById("btnBuscarV").addEventListener("click", async function() {
+  const cedula= document.getElementById("inputCedulaV");
+  if (!cedula.value.trim()) {
+    cedula.classList.add("is-invalid");
+    return
+  }else{
+    cedula.classList.remove("is-invalid");
+    cedula.classList.add("is-valid");
+  }
+
+  try {
+    const respuesta = await fetch("buscar_cliente.php?cedula="+cedula.value.trim())
+    const cliente = await respuesta.json();
+    if (cliente.encontrado) {
+      cedula.readOnly = true
+      document.getElementById("inputNombreV").value = cliente.nombre
+      document.getElementById("inputApellidoV").value = cliente.apellido
+      document.getElementById("inputDeudaActualV").value = cliente.deuda
+
+    }else{
+    cedula.classList.remove("is-valid");
+    cedula.classList.add("is-invalid");
+      
+    }
+  } catch (error) {
+    alert("Error al buscar cliente: " + error)
+  }
+
+})
 
 
+document.getElementById("btnBuscarP").addEventListener("click", async function () {
+  const cedula = document.getElementById("inputCedulaP");
+  if (!cedula.value.trim()) {
+    cedula.classList.add("is-invalid")
+    return
+  }else{
+    cedula.classList.remove("is-invalid");
+    cedula.classList.add("is-valid");
+  }
+
+  try {
+    const respuesta = await fetch("buscar_cliente.php?cedula="+cedula.value.trim())
+    const cliente = await respuesta.json();
+    if (cliente.encontrado) {
+      cedula.readOnly = true
+      document.getElementById("inputNombreP").value= cliente.nombre
+      document.getElementById("inputApellidoP").value = cliente.apellido
+      document.getElementById("inputDeudaActualP").value = cliente.deuda
+    } else {
+      cedula.classList.remove("is-valid");
+      cedula.classList.add("is-invalid");
+    }
+  } catch (error) {
+    alert("Error al buscar cliente: " + error)
+  }
+  
+})

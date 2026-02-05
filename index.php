@@ -56,8 +56,10 @@
                 class="form-control"
                 id="inputCedulaR"
                 name="inputCedulaR"
-              />
+              />              
             </div>
+            <div class="w-100"></div>
+
             <div class="col-md-6">
               <label for="inputNombreR" class="form-label">Nombre</label>
               <input
@@ -94,15 +96,15 @@
                 name="inputTelefonoR"
               />
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="inputDeudaR" class="form-label">Deuda</label>
               <input
                 type="number"
                 class="form-control"
                 id="inputDeudaR"
                 name="inputDeudaR"
-                
-                
+                min="0"
+                step="0.01"                
                 value="0"
               />
             </div>
@@ -114,119 +116,76 @@
 
         <div class="contenedorVenta" id="contenedorVenta" style="display: none">
           <h1>Ventas</h1>
-          <form class="row g-3" style="margin-top: 1%">
-            <div
-              class="col-12"
-              style="display: flex; flex-direction: row; align-items: end"
-            >
+          <form class="row g-3" id="formVenta" style="margin-top: 1%" action="guardar_venta.php" method="POST">
+            <div class="col-12" style="display: flex; flex-direction: row; align-items: end">
               <div class="col-md-3" style="margin-right: 10px">
-                <label for="inpCedula" class="form-label">Cedula</label>
-                <input type="text" class="form-control" id="inputCedula" />
+                <label for="inputCedulaV" class="form-label">Cédula</label>
+                <input type="text" class="form-control" id="inputCedulaV" name="inputCedulaV" />
               </div>
-              <div class="">
-                <button type="submit" class="btn btn-primary">Buscar</button>
+              <div>
+                <button type="button" id="btnBuscarV" class="btn btn-primary">Buscar</button>
               </div>
             </div>
 
             <div class="col-md-6">
-              <label for="inputNombre" class="form-label">Nombre</label>
-              <input
-                type="text"
-                class="form-control"
-                id="inputNombre"
-                disabled
-              />
+              <label for="inputNombreV" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="inputNombreV" name="inputNombreV" disabled />
             </div>
             <div class="col-md-6">
-              <label for="inputApellido" class="form-label">Apellido</label>
-              <input
-                type="text"
-                class="form-control"
-                id="inputApellido"
-                disabled
-              />
+              <label for="inputApellidoV" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="inputApellidoV" name="inputApellidoV" disabled />
             </div>
 
             <div class="col-md-3">
-              <label for="inputDeuda" class="form-label">Deuda</label>
-              <input
-                type="number"
-                class="form-control"
-                id="inputDeuda"
-                min="0"
-                step="0.01"
-                value="0"
-              />
+              <label for="inputDeudaActualV" class="form-label">Deuda Actual</label>
+              <input type="number" class="form-control" id="inputDeudaActualV" name="inputDeudaActualV" disabled/>
+            </div>
+
+            <div class="col-md-3">
+              <label for="inputDeudaV" class="form-label">Nueva Deuda</label>
+              <input type="number" class="form-control" id="inputDeudaV" name="inputDeudaV" min="1" step="0.01" value="1" />
             </div>
 
             <div class="col-12">
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-success">Guardar Venta</button>
             </div>
           </form>
         </div>
 
         <div class="contenedorPagos" id="contenedorPagos" style="display: none">
           <h1>Pagos</h1>
-          <form class="row g-3" style="margin-top: 1%">
-            <div
-              class="col-12"
-              style="display: flex; flex-direction: row; align-items: end"
-            >
+          <form class="row g-3" id="formPago" style="margin-top: 1%" action="guardar_pago.php" method="POST">
+            <div class="col-12" style="display: flex; flex-direction: row; align-items: end">
               <div class="col-md-3" style="margin-right: 10px">
-                <label for="inpCedula" class="form-label">Cedula</label>
-                <input type="text" class="form-control" id="inputCedula" />
+                <label for="inputCedulaP" class="form-label">Cédula</label>
+                <input type="text" class="form-control" id="inputCedulaP" name="inputCedulaP" />
               </div>
-              <div class="">
-                <button type="submit" class="btn btn-primary">Buscar</button>
+              <div>
+                <button type="button" id="btnBuscarP" class="btn btn-primary">Buscar</button>
               </div>
             </div>
 
             <div class="col-md-6">
-              <label for="inputNombre" class="form-label">Nombre</label>
-              <input
-                type="text"
-                class="form-control"
-                id="inputNombre"
-                disabled
-              />
+              <label for="inputNombreP" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="inputNombreP" name="inputNombreP" disabled />
             </div>
             <div class="col-md-6">
-              <label for="inputApellido" class="form-label">Apellido</label>
-              <input
-                type="text"
-                class="form-control"
-                id="inputApellido"
-                disabled
-              />
+              <label for="inputApellidoP" class="form-label">Apellido</label>
+              <input type="text" class="form-control" id="inputApellidoP" name="inputApellidoP" disabled />
             </div>
 
             <div class="col-md-3">
-              <label for="inputDeuda" class="form-label">Deuda</label>
-              <input
-                type="number"
-                class="form-control"
-                id="inputDeuda"
-                min="0"
-                step="0.01"
-                value="0"
-                disabled
-              />
+              <label for="inputDeudaActualP" class="form-label">Deuda Actual</label>
+              <input type="number" class="form-control" id="inputDeudaActualP" name="inputDeudaActualP" disabled/>
             </div>
 
             <div class="col-md-3">
-              <label for="inputDeuda" class="form-label">Valor a Pagar</label>
-              <input
-                type="number"
-                class="form-control"
-                id="inputDeuda"
-                min="0"
-                step="0.01"
-                value="0"
-              />
+              <label for="inputPagoP" class="form-label">Valor a Pagar</label>
+              <input type="number" class="form-control" id="inputPagoP" name="inputPagoP" min="1" step="0.01" value="1" />
             </div>
 
             <div class="col-12">
-              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="submit" class="btn btn-success">Guardar Venta</button>
             </div>
           </form>
         </div>
