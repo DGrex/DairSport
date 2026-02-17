@@ -26,103 +26,110 @@ btnPagos.addEventListener("click", (e) => {
   contenedorPagos.style.display = "block";
 });
 
-document
-  .getElementById("formCliente")
-  .addEventListener("submit", async function (event) {
-    event.preventDefault();
+document.getElementById("formCliente").addEventListener("submit", async function (event) {
+  event.preventDefault();
 
-    let valido = true;
-       // Cédula
+  let errores = []; // acumulador de mensajes
 
-
-
-
-    const cedula = document.getElementById("inputCedulaR");
-
-    // Validación de formato
-    if (!validarCedula(cedula.value.trim())) {
-      cedula.classList.add("is-invalid");
-      valido = false;
-    } else {
-      try {
-        // Consultar al servidor si la cédula existe
-        const respuesta = await fetch("validar_cedula.php?cedula=" + cedula.value.trim());
-        const existe = (await respuesta.text()).trim();
-        
-
+  const cedula = document.getElementById("inputCedulaR");
+  if (!validarCedula(cedula.value.trim())) {
+    cedula.classList.add("is-invalid");
+    errores.push("❌ La cédula no tiene un formato válido.");
+  } else {
+    try {
+      const respuesta=  await fetch("validar_cedula.php?cedula=" + cedula.value.trim());
+      const existe = (await respuesta.text()).trim();
         if (existe === "0") {
           cedula.classList.remove("is-invalid");
           cedula.classList.add("is-valid");
         } else {
           cedula.classList.add("is-invalid");
           valido = false;
-          alert("❌ La cédula ya está registrada.");
+          errores.push("❌La cédula ya está registrada.");
         }
-      } catch (error) {
-        alert("Error al validar la cédula: " + error);
+    } catch (error) {
+        errores.push("❌Error al validar la cédula: " + error);
         valido = false;
-      }
     }
+  }
 
-    // Nombre
-    const nombre = document.getElementById("inputNombreR");
-    if (nombre.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(nombre.value.trim())) {
-      nombre.classList.add("is-invalid");
-      valido = false;
-    } else {
-      nombre.classList.remove("is-invalid");
-      nombre.classList.add("is-valid");
-    }
+  const nombre = document.getElementById("inputNombreR");
+  if (nombre.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(nombre.value.trim())) {
+    nombre.classList.add("is-invalid");
+    errores.push("❌ El nombre no es válido.");
+  } else {
+    nombre.classList.remove("is-invalid");
+    nombre.classList.add("is-valid");
+  }
 
-    // Apellido
-    const apellido = document.getElementById("inputApellidoR");
-    if (apellido.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(apellido.value.trim())) {
-      apellido.classList.add("is-invalid");
-      valido = false;
-    } else {
-      apellido.classList.remove("is-invalid");
-      apellido.classList.add("is-valid");
-    }
+  const apellido = document.getElementById("inputApellidoR");
+  if (apellido.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(apellido.value.trim())) {
+    apellido.classList.add("is-invalid");
+    errores.push("❌ El apellido no es válido.");
+  } else {
+    apellido.classList.remove("is-invalid");
+    apellido.classList.add("is-valid");
+  }
 
-    // Correo
-    const correo = document.getElementById("inputCorreoR");
-    if (!/\S+@\S+\.\S+/.test(correo.value.trim())) {
-      correo.classList.add("is-invalid");
-      valido = false;
-    } else {
-      correo.classList.remove("is-invalid");
-      correo.classList.add("is-valid");
-    }
+  const correo = document.getElementById("inputCorreoR");
+  if (!/\S+@\S+\.\S+/.test(correo.value.trim())) {
+    correo.classList.add("is-invalid");
+    errores.push("❌ El correo no es válido.");
+  } else {
+    correo.classList.remove("is-invalid");
+    correo.classList.add("is-valid");
+  }
 
-    // Teléfono (opcional, pero si se llena debe ser numérico)
-    const telefono = document.getElementById("inputTelefonoR");
-    if (telefono.value.trim() !== "" && !/^\d+$/.test(telefono.value.trim())) {
-      
-      telefono.classList.add("is-invalid");
-      valido = false;
-    } else {
-      
-      telefono.classList.remove("is-invalid");
-      telefono.classList.add("is-valid");
-    }
+  const telefono = document.getElementById("inputTelefonoR");
+  if (telefono.value.trim() !== "" && !/^\d+$/.test(telefono.value.trim())) {
+    telefono.classList.add("is-invalid");
+    errores.push("❌ El teléfono debe ser numérico.");
+  } else {
+    telefono.classList.remove("is-invalid");
+    telefono.classList.add("is-valid");
+  }
 
-    // Deuda
-    const deuda = document.getElementById("inputDeudaR");
-    if (parseFloat(deuda.value) < 0) {
-      deuda.classList.add("is-invalid");
-      valido = false;
-    } else {
-      deuda.classList.remove("is-invalid");
-      deuda.classList.add("is-valid");
-    }
+  const deuda = document.getElementById("inputDeudaR");
+  if (parseFloat(deuda.value) < 0) {
+    deuda.classList.add("is-invalid");
+    errores.push("❌ La deuda no puede ser negativa.");
+  } else {
+    deuda.classList.remove("is-invalid");
+    deuda.classList.add("is-valid");
+  }
 
-    // Si todo está bien, enviamos
-    if (valido) {
-      formCliente.submit();
-    }
+  // Mostrar errores si existen
+  if (errores.length > 0) {
+    Swal.fire({
+      icon: "error",
+      title: "Errores en el formulario",
+      html: errores.join("<br>")
+    });
+    return; // no enviar
+  }
 
-    
+  // Si todo está bien, enviar con fetch
+  const formData = new FormData(this);
+  fetch("guardar_cliente.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    Swal.fire({
+      icon: data.includes("Error") ? "error" : "success",
+      title: data.includes("Error") ? "Error" : "Éxito",
+      text: data
+    });
+  })
+  .catch(error => {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Hubo un problema al procesar el cliente."
+    });
   });
+});
 
 
 
@@ -214,3 +221,96 @@ document.getElementById("btnBuscarP").addEventListener("click", async function (
   }
   
 })
+
+
+document.getElementById("formVenta").addEventListener("submit", function(e) {
+  e.preventDefault(); // evita recargar la página
+
+  const formData = new FormData(this);
+
+  fetch("guardar_venta.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    // Mostrar el mensaje en un cuadro de diálogo
+    Swal.fire({
+      icon: data.includes("Error") ? "error" : "success",
+      title: data.includes("Error") ? "Error" : "Éxito",
+      text: data
+    });
+  })
+  .catch(error => {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Hubo un problema al procesar la venta."
+    });
+  });
+});
+
+document.getElementById("formPago").addEventListener("submit", function(e) {
+  e.preventDefault(); // evita recargar la página
+
+  const formData = new FormData(this);
+
+  fetch("guardar_pago.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    // Mostrar el mensaje en un cuadro de diálogo
+    Swal.fire({
+      icon: data.includes("Error") ? "error" : "success",
+      title: data.includes("Error") ? "Error" : "Éxito",
+      text: data
+    });
+  })
+  .catch(error => {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Hubo un problema al procesar la venta."
+    });
+  });
+});
+
+
+
+
+// login
+
+document.getElementById("formLogin").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  try {
+    const resp = await fetch("validar_login.php", { method:"POST", body:formData });
+    const data = await resp.text();
+
+    if(data.includes("Éxito")){
+      Swal.fire({
+        icon:"success",
+        title:"Bienvenido",
+        text:data
+      }).then(() => {
+        document.getElementById("contenedorLogin").style.display = "none";
+        document.getElementById("dropdownMenuButton").style.display = "block";
+        contenedorCliente.style.display = "block";
+      });
+    } else {
+      Swal.fire({
+        icon:"error",
+        title:"Error",
+        text:data
+      });
+    }
+  } catch(err){
+    Swal.fire({ icon:"error", title:"Error", text:"No se pudo conectar al servidor." });
+  }
+});
+
+//limpiar formulario de clientes
+
