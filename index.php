@@ -31,7 +31,7 @@
             <li><a class="dropdown-item" id="btnVenta">Ventas</a></li>
             <li><a class="dropdown-item" id="btnPagos">Pagos</a></li>
             <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+            <li><a class="dropdown-item" id="btnExit">Cerrar sesión</a></li>
           </ul>
         </div>
         <h2 class="m-0">DairSport</h2>
@@ -84,9 +84,11 @@
             <label for="inputDeudaR" class="form-label">Deuda</label>
             <input type="number" class="form-control" id="inputDeudaR" name="inputDeudaR" min="0" step="0.01" value="0" />
           </div>
-          <div class="col-12">
-            <button type="submit" class="btn btn-success w-100">Guardar</button>
+          <div class="col-12 d-flex justify-content-start gap-3 mt-3">
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <button type="reset" id="btn_reset_cliente" class="btn btn-secondary">Limpiar</button>
           </div>
+
         </form>
       </div>
 
@@ -123,8 +125,9 @@
             <input type="number" class="form-control" id="inputDeudaV" name="inputDeudaV" min="1" step="0.01" value="1" />
           </div>
 
-          <div class="col-12">
-            <button type="submit" class="btn btn-success w-100">Guardar Venta</button>
+          <div class="col-12 d-flex justify-content-start gap-3 mt-3">
+            <button type="submit" class="btn btn-success ">Guardar Venta</button>
+            <button type="reset" id="btn_reset" class="btn btn-secondary">Limpiar</button>
           </div>
         </form>
       </div>
@@ -162,8 +165,9 @@
             <input type="number" class="form-control" id="inputPagoP" name="inputPagoP" min="1" step="0.01" value="1" />
           </div>
 
-          <div class="col-12">
-            <button type="submit" class="btn btn-success w-100">Guardar Pago</button>
+          <div class="col-12 d-flex justify-content-start gap-3 mt-3">
+            <button type="submit" class="btn btn-success">Guardar Pago</button>
+            <button type="reset" id="btn_reset_pago" class="btn btn-secondary">Limpiar</button>
           </div>
         </form>
       </div>
@@ -174,5 +178,3 @@
     <script src="lad.js"></script>
   </body>
 </html>
-
-

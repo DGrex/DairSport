@@ -1,9 +1,11 @@
 const btnCliente = document.getElementById("btnCliente");
 const btnVenta = document.getElementById("btnVenta");
 const btnPagos = document.getElementById("btnPagos");
+const btnExit = document.getElementById("btnExit")
 const contenedorCliente = document.getElementById("contenedorCLiente");
 const contenedorVenta = document.getElementById("contenedorVenta");
 const contenedorPagos = document.getElementById("contenedorPagos");
+const contenedorLogin = document.getElementById("contenedorLogin")
 
 btnCliente.addEventListener("click", (e) => {
   e.preventDefault();
@@ -25,6 +27,14 @@ btnPagos.addEventListener("click", (e) => {
   contenedorVenta.style.display = "none";
   contenedorPagos.style.display = "block";
 });
+
+btnExit.addEventListener("click", (e)=>{
+  contenedorCliente.style.display = "none";
+  contenedorVenta.style.display = "none";
+  contenedorPagos.style.display = "none";
+  contenedorLogin.style.display = "block";
+  document.getElementById("dropdownMenuButton").style.display = "none"
+})
 
 document.getElementById("formCliente").addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -129,6 +139,9 @@ document.getElementById("formCliente").addEventListener("submit", async function
       text: "Hubo un problema al procesar el cliente."
     });
   });
+
+  document.getElementById("btn_reset_cliente").click();
+
 });
 
 
@@ -248,6 +261,7 @@ document.getElementById("formVenta").addEventListener("submit", function(e) {
       text: "Hubo un problema al procesar la venta."
     });
   });
+   document.getElementById("btn_reset").click();
 });
 
 document.getElementById("formPago").addEventListener("submit", function(e) {
@@ -275,6 +289,7 @@ document.getElementById("formPago").addEventListener("submit", function(e) {
       text: "Hubo un problema al procesar la venta."
     });
   });
+  document.getElementById("btn_reset_pago").click();
 });
 
 
@@ -312,5 +327,32 @@ document.getElementById("formLogin").addEventListener("submit", async function(e
   }
 });
 
-//limpiar formulario de clientes
 
+
+
+// Limpiar formulario de cliente
+
+document.getElementById("btn_reset_cliente").addEventListener("click", function(){
+  limpiar_validacion("formCliente")  
+})
+
+//limpiar formulario de ventas
+document.getElementById("btn_reset").addEventListener("click", function(){
+  const cedula= document.getElementById("inputCedulaV").readOnly= false
+  limpiar_validacion("formVenta")
+})
+
+//limpiar formulario pagos
+document.getElementById("btn_reset_pago").addEventListener("click", function(){
+  document.getElementById("inputCedulaP").readOnly= false
+  limpiar_validacion("formPago")
+})
+
+
+function limpiar_validacion(id_formulario){
+  const idInput = `#${id_formulario} input`
+  const inputs = document.querySelectorAll(idInput)
+  inputs.forEach(input=>{
+    input.classList.remove("is-valid", "is-invalid")
+  })
+}
