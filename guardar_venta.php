@@ -21,5 +21,12 @@ $stmt->execute([
     ':v_deuda'    => $deuda
 ]);
 
+// Actualizar deuda (lo que hacía el trigger) 
+$stmt = $pdo->prepare("UPDATE clientes SET deuda = deuda + :v_deuda WHERE id = :id_cliente"); 
+$stmt->execute([
+    ':v_deuda'    => $deuda,
+    ':id_cliente' => $id_cliente
+]);
+
 echo "✅ Venta registrada correctamente.";
 ?>
