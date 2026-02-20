@@ -20,3 +20,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /htdocs/DairSport   # Carpeta en InfinityFree
           local-dir: ./                   # Carpeta local (raíz del repo)
+
+
