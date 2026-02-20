@@ -356,3 +356,6 @@ function limpiar_validacion(id_formulario){
     input.classList.remove("is-valid", "is-invalid")
   })
 }
+
+
+//Creado Por Denis Goyes
