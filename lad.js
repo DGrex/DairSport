@@ -1,46 +1,90 @@
-const btnCliente = document.getElementById("btnCliente");
-const btnVenta = document.getElementById("btnVenta");
-const btnPagos = document.getElementById("btnPagos");
-const btnExit = document.getElementById("btnExit")
-const contenedorCliente = document.getElementById("contenedorCLiente");
-const contenedorVenta = document.getElementById("contenedorVenta");
-const contenedorPagos = document.getElementById("contenedorPagos");
-const contenedorLogin = document.getElementById("contenedorLogin")
 
+// MENU DEL SISTEMA 
+const btnCliente  = document.getElementById("btnCliente");
+const btnVenta    = document.getElementById("btnVenta");
+const btnPagos    = document.getElementById("btnPagos");
+const btnExit     = document.getElementById("btnExit");
+
+const contenedorCliente = document.getElementById("contenedorCLiente");
+const contenedorVenta   = document.getElementById("contenedorVenta");
+const contenedorPagos   = document.getElementById("contenedorPagos");
+const contenedorLogin   = document.getElementById("contenedorLogin");
+
+const dropdownMenuButton = document.getElementById("dropdownMenuButton");
+
+const contenedores = [contenedorCliente, contenedorVenta, contenedorPagos, contenedorLogin];
+
+// FUNCION PARA MOSTRAR CONTENEDOR Y OCULTAR LOS DEMAS
+function mostrarContenedor(contenedor) {
+  contenedores.forEach(c => c.classList.add("d-none"))
+  contenedor.classList.remove("d-none")
+}
+
+// EVENTOS DE LOS BOTONES DEL MENU
 btnCliente.addEventListener("click", (e) => {
   e.preventDefault();
-  contenedorVenta.style.display = "none";
-  contenedorPagos.style.display = "none";
-  contenedorCliente.style.display = "block";
+  mostrarContenedor(contenedorCliente);
 });
 
 btnVenta.addEventListener("click", (e) => {
   e.preventDefault();
-  contenedorCliente.style.display = "none";
-  contenedorPagos.style.display = "none";
-  contenedorVenta.style.display = "block";
+  mostrarContenedor(contenedorVenta);
 });
 
 btnPagos.addEventListener("click", (e) => {
   e.preventDefault();
-  contenedorCliente.style.display = "none";
-  contenedorVenta.style.display = "none";
-  contenedorPagos.style.display = "block";
+  mostrarContenedor(contenedorPagos);
 });
 
 btnExit.addEventListener("click", (e)=>{
-  contenedorCliente.style.display = "none";
-  contenedorVenta.style.display = "none";
-  contenedorPagos.style.display = "none";
-  contenedorLogin.style.display = "block";
-  document.getElementById("dropdownMenuButton").style.display = "none"
+  e.preventDefault();
+  mostrarContenedor(contenedorLogin);
+  dropdownMenuButton.classList.add("d-none");
 })
 
+// EVENTO DE ENVIO DEL FORMULARIO DE LOGIN
+document.getElementById("formLogin").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const formData = new FormData(this);
+
+  try {
+    const resp = await fetch("validar_login.php", { method:"POST", body:formData });
+    const data = await resp.text();
+
+    if(data.includes("Éxito")){
+      /*
+      Swal.fire({
+        icon:"success",
+        title:"Bienvenido",
+        text:data
+      }).then(() => {
+        mostrarContenedor(contenedorCliente);
+        dropdownMenuButton.classList.remove("d-none");        
+      });
+      */
+      mostrarContenedor(contenedorCliente);
+      dropdownMenuButton.classList.remove("d-none");    
+    } else {
+      Swal.fire({
+        icon:"error",
+        title:"Error",
+        text:data
+      });
+    }
+  } catch(err){
+    Swal.fire({ icon:"error", title:"Error", text:"No se pudo conectar al servidor." });
+  }
+});
+
+
+
+// VALIDACIONES Y ENVIO DEL FORMULARIO DE CLIENTES
 document.getElementById("formCliente").addEventListener("submit", async function (event) {
   event.preventDefault();
 
   let errores = []; // acumulador de mensajes
 
+  //VALIDAR CEDULA
   const cedula = document.getElementById("inputCedulaR");
   if (!validarCedula(cedula.value.trim())) {
     cedula.classList.add("is-invalid");
@@ -63,6 +107,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
     }
   }
 
+  //VAALIDAR NOMBRE
   const nombre = document.getElementById("inputNombreR");
   if (nombre.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(nombre.value.trim())) {
     nombre.classList.add("is-invalid");
@@ -72,6 +117,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
     nombre.classList.add("is-valid");
   }
 
+  //VALIDAR APELLIDO
   const apellido = document.getElementById("inputApellidoR");
   if (apellido.value.trim() === "" || !/^[a-zA-Z\s]+$/.test(apellido.value.trim())) {
     apellido.classList.add("is-invalid");
@@ -81,6 +127,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
     apellido.classList.add("is-valid");
   }
 
+  //VALIDAR CORREO
   const correo = document.getElementById("inputCorreoR");
   if (!/\S+@\S+\.\S+/.test(correo.value.trim())) {
     correo.classList.add("is-invalid");
@@ -90,6 +137,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
     correo.classList.add("is-valid");
   }
 
+  //VALIDAR TELEFONO
   const telefono = document.getElementById("inputTelefonoR");
   if (telefono.value.trim() !== "" && !/^\d+$/.test(telefono.value.trim())) {
     telefono.classList.add("is-invalid");
@@ -99,6 +147,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
     telefono.classList.add("is-valid");
   }
 
+  //VALIDAR DEUDA
   const deuda = document.getElementById("inputDeudaR");
   if (parseFloat(deuda.value) < 0) {
     deuda.classList.add("is-invalid");
@@ -108,22 +157,24 @@ document.getElementById("formCliente").addEventListener("submit", async function
     deuda.classList.add("is-valid");
   }
 
-  // Mostrar errores si existen
+  //MOSTRAR ERRORES SI LOS HAY
   if (errores.length > 0) {
     Swal.fire({
       icon: "error",
       title: "Errores en el formulario",
       html: errores.join("<br>")
     });
-    return; // no enviar
+    return; // si hay errores, no continuar con el envío
   }
 
-  // Si todo está bien, enviar con fetch
+  // SI TODO ES VÁLIDO, ENVIAR EL FORMULARIO
   const formData = new FormData(this);
+  // ENVIAR DATOS AL SERVIDOR
   fetch("guardar_cliente.php", {
     method: "POST",
     body: formData
   })
+  // RESPUESTA DEL SERVIDOR
   .then(response => response.text())
   .then(data => {
     Swal.fire({
@@ -132,6 +183,7 @@ document.getElementById("formCliente").addEventListener("submit", async function
       text: data
     });
   })
+  // ERROR DE CONEXIÓN
   .catch(error => {
     Swal.fire({
       icon: "error",
@@ -140,41 +192,12 @@ document.getElementById("formCliente").addEventListener("submit", async function
     });
   });
 
+  // LIMPIAR FORMULARIO
   document.getElementById("btn_reset_cliente").click();
 
 });
 
-
-
-  //Funcion para validar numero de cedulas ecuatoriana
-function validarCedula(cedula) {
-  if (!/^\d{10}$/.test(cedula)) return false;
-
-  const provincia = parseInt(cedula.substring(0, 2), 10);
-  if (provincia < 1 || (provincia > 24 && provincia !== 30)) return false;
-
-  const tercer = parseInt(cedula[2], 10);
-  if (tercer >= 6) return false;
-
-  const digitos = cedula.split("").map(Number);
-  let suma = 0;
-
-  for (let i = 0; i < 9; i++) {
-    if (i % 2 === 0) {
-      // posiciones impares
-      let mult = digitos[i] * 2;
-      if (mult > 9) mult -= 9;
-      suma += mult;
-    } else {
-      suma += digitos[i];
-    }
-  }
-
-  const verificador = (10 - (suma % 10)) % 10;
-  return verificador === digitos[9];
-}
-
-// Apartado de Ventas
+// BUSCAR CLIENTE PARA VENTAS Y PAGOS
 
 document.getElementById("btnBuscarV").addEventListener("click", async function() {
   const cedula= document.getElementById("inputCedulaV");
@@ -194,18 +217,14 @@ document.getElementById("btnBuscarV").addEventListener("click", async function()
       document.getElementById("inputNombreV").value = cliente.nombre
       document.getElementById("inputApellidoV").value = cliente.apellido
       document.getElementById("inputDeudaActualV").value = cliente.deuda
-
     }else{
     cedula.classList.remove("is-valid");
-    cedula.classList.add("is-invalid");
-      
+    cedula.classList.add("is-invalid");      
     }
   } catch (error) {
     alert("Error al buscar cliente: " + error)
   }
-
 })
-
 
 document.getElementById("btnBuscarP").addEventListener("click", async function () {
   const cedula = document.getElementById("inputCedulaP");
@@ -236,8 +255,18 @@ document.getElementById("btnBuscarP").addEventListener("click", async function (
 })
 
 
+// EVENTOS DE ENVIO DE LOS FORMULARIOS DE VENTAS
 document.getElementById("formVenta").addEventListener("submit", function(e) {
-  e.preventDefault(); // evita recargar la página
+  e.preventDefault();
+
+  if(!document.getElementById("inputNombreV").value){
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debe buscar el cliente."
+    });
+    return;
+  }
 
   const formData = new FormData(this);
 
@@ -247,7 +276,6 @@ document.getElementById("formVenta").addEventListener("submit", function(e) {
   })
   .then(response => response.text())
   .then(data => {
-    // Mostrar el mensaje en un cuadro de diálogo
     Swal.fire({
       icon: data.includes("Error") ? "error" : "success",
       title: data.includes("Error") ? "Error" : "Éxito",
@@ -264,8 +292,19 @@ document.getElementById("formVenta").addEventListener("submit", function(e) {
    document.getElementById("btn_reset").click();
 });
 
+// EVENTOS DE ENVIO DE LOS FORMULARIOS DE PAGOS
 document.getElementById("formPago").addEventListener("submit", function(e) {
-  e.preventDefault(); // evita recargar la página
+  e.preventDefault(); 
+  
+  // evita recargar la página
+  if(!document.getElementById("inputNombreP").value){
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Debe buscar el cliente."
+    });
+    return;
+  }
 
   const formData = new FormData(this);
 
@@ -294,61 +333,25 @@ document.getElementById("formPago").addEventListener("submit", function(e) {
 
 
 
-
-// login
-
-document.getElementById("formLogin").addEventListener("submit", async function(e){
-  e.preventDefault();
-  const formData = new FormData(this);
-
-  try {
-    const resp = await fetch("validar_login.php", { method:"POST", body:formData });
-    const data = await resp.text();
-
-    if(data.includes("Éxito")){
-      Swal.fire({
-        icon:"success",
-        title:"Bienvenido",
-        text:data
-      }).then(() => {
-        document.getElementById("contenedorLogin").style.display = "none";
-        document.getElementById("dropdownMenuButton").style.display = "block";
-        contenedorCliente.style.display = "block";
-      });
-    } else {
-      Swal.fire({
-        icon:"error",
-        title:"Error",
-        text:data
-      });
-    }
-  } catch(err){
-    Swal.fire({ icon:"error", title:"Error", text:"No se pudo conectar al servidor." });
-  }
-});
-
-
-
-
-// Limpiar formulario de cliente
+//LIMPIAR FORMULARIO CLIENTE
 
 document.getElementById("btn_reset_cliente").addEventListener("click", function(){
   limpiar_validacion("formCliente")  
 })
 
-//limpiar formulario de ventas
+//LIMPIAR FORMULARIO VENTAS
 document.getElementById("btn_reset").addEventListener("click", function(){
   const cedula= document.getElementById("inputCedulaV").readOnly= false
   limpiar_validacion("formVenta")
 })
 
-//limpiar formulario pagos
+//LIMPIAR FORMULARIO PAGOS
 document.getElementById("btn_reset_pago").addEventListener("click", function(){
   document.getElementById("inputCedulaP").readOnly= false
   limpiar_validacion("formPago")
 })
 
-
+//FUNCION PARA LIMPIAR VALIDACIONES DE LOS FORMULARIOS
 function limpiar_validacion(id_formulario){
   const idInput = `#${id_formulario} input`
   const inputs = document.querySelectorAll(idInput)
@@ -357,5 +360,31 @@ function limpiar_validacion(id_formulario){
   })
 }
 
+//FUNCIÓN PARA VALIDAR CEDULA ECUATORIANA
+function validarCedula(cedula) {
+  if (!/^\d{10}$/.test(cedula)) return false;
 
-//Creado Por Denis Goyes
+  const provincia = parseInt(cedula.substring(0, 2), 10);
+  if (provincia < 1 || (provincia > 24 && provincia !== 30)) return false;
+
+  const tercer = parseInt(cedula[2], 10);
+  if (tercer >= 6) return false;
+
+  const digitos = cedula.split("").map(Number);
+  let suma = 0;
+
+  for (let i = 0; i < 9; i++) {
+    if (i % 2 === 0) {
+      // posiciones impares
+      let mult = digitos[i] * 2;
+      if (mult > 9) mult -= 9;
+      suma += mult;
+    } else {
+      suma += digitos[i];
+    }
+  }
+  const verificador = (10 - (suma % 10)) % 10;
+  return verificador === digitos[9];
+}
+
+//CREADO POR: DENIS GOYES MORAN - 2026

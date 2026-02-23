@@ -17,12 +17,12 @@
       <div class="menu-wrapper d-flex justify-content-between align-items-center">
         <div class="dropdown">
           <button 
-            class="btn btn-secondary dropdown-toggle"
+            class="btn btn-secondary dropdown-toggle d-none"
             type="button"
             id="dropdownMenuButton"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            style="display: none"
+            
           >
             Menú
           </button>
@@ -38,7 +38,7 @@
       </div>
 
       <!-- Login -->
-       <div id="contenedorLogin">
+       <div id="contenedorLogin" >
         <div class="container bg-light p-4 rounded shadow" style="max-width:400px;">
           <h2 class="text-center mb-3">Acceso al sistema</h2>
           <form id="formLogin">
@@ -56,7 +56,7 @@
       </div>
 
       <!-- Clientes -->
-      <div id="contenedorCLiente" style="display: none">
+      <div id="contenedorCLiente" class="d-none">
         <h1 class="h4 text-center mb-3">Cliente</h1>
         <form id="formCliente" class="row g-3" action="guardar_cliente.php" method="POST">
           <div class="col-12 col-md-6">
@@ -93,7 +93,7 @@
       </div>
 
       <!-- Ventas -->
-      <div id="contenedorVenta" style="display: none">
+      <div id="contenedorVenta" class="d-none">
         <h1 class="h4 text-center mb-3">Ventas</h1>
         <form class="row g-3" id="formVenta" action="guardar_venta.php" method="POST">
           <div class="row">
@@ -133,7 +133,7 @@
       </div>
 
       <!-- Pagos -->
-      <div id="contenedorPagos" style="display: none">
+      <div id="contenedorPagos" class="d-none">
         <h1 class="h4 text-center mb-3">Pagos</h1>
         <form class="row g-3" id="formPago" action="guardar_pago.php" method="POST">
           <div class="row">
