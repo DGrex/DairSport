@@ -36,11 +36,11 @@ btnPagos.addEventListener("click", (e) => {
   mostrarContenedor(contenedorPagos);
 });
 
-btnExit.addEventListener("click", (e)=>{
+btnExit.addEventListener("click", (e) => {
   e.preventDefault();
-  mostrarContenedor(contenedorLogin);
-  dropdownMenuButton.classList.add("d-none");
-})
+  window.location.href = "logout.php"; // esto cierra la sesión en el servidor
+});
+
 
 // EVENTO DE ENVIO DEL FORMULARIO DE LOGIN
 document.getElementById("formLogin").addEventListener("submit", async function(e){
@@ -63,7 +63,8 @@ document.getElementById("formLogin").addEventListener("submit", async function(e
       });
       */
       mostrarContenedor(contenedorCliente);
-      dropdownMenuButton.classList.remove("d-none");    
+      dropdownMenuButton.classList.remove("d-none");
+      this.reset()//limpiar formulario
     } else {
       Swal.fire({
         icon:"error",

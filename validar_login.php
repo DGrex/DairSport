@@ -2,23 +2,20 @@
 require 'conexion.php';
 
 $usuario = $_POST['usuario'] ?? '';
-$clave   = $_POST['clave'] ?? '';
+$password = $_POST['clave'] ?? '';
 
-$stmt = $pdo->prepare("SELECT clave FROM usuarios WHERE usuario = :usuario");
+$sql = "SELECT clave FROM usuarios WHERE usuario = :usuario";
+$stmt = $pdo->prepare($sql);
 $stmt->execute([':usuario' => $usuario]);
-$claveGuardada = $stmt->fetchColumn();
+$row = $stmt->fetch();
 
-if(!$claveGuardada){
-    echo "❌ Usuario no encontrado.";
-    exit;
-}
-
-// Comparación directa (texto plano)
-if($clave === $claveGuardada){
+if ($row && password_verify($password, $row['clave'])) {
+    // Contraseña correcta → iniciar sesión
     session_start();
     $_SESSION['usuario'] = $usuario;
-    echo "Éxito: Login correcto.";
+    echo "Éxito: Login correcto";
 } else {
-    echo "❌ Contraseña incorrecta.";
+    // Contraseña incorrecta
+    echo "Usuario o contraseña inválidos";
 }
 ?>
